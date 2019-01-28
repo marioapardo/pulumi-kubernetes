@@ -17,6 +17,7 @@ OPENAPI_DIR     := provider/pkg/gen/openapi-specs
 OPENAPI_FILE    := ${OPENAPI_DIR}/swagger-${KUBE_VERSION}.json
 
 VERSION_FLAGS   := -ldflags "-X github.com/pulumi/pulumi-kubernetes/provider/v2/pkg/version.Version=${VERSION}"
+BUILD_FLAGS := -gcflags "all=-N -l"
 
 GO              ?= go
 CURL            ?= curl
@@ -38,8 +39,8 @@ $(OPENAPI_FILE)::
 	test -f $(OPENAPI_FILE) || $(CURL) -s -L $(SWAGGER_URL) > $(OPENAPI_FILE)
 
 build:: $(OPENAPI_FILE)
-	cd provider && $(GO) install $(VERSION_FLAGS) $(PROJECT)/provider/v2/cmd/$(PROVIDER)
-	cd provider && $(GO) install $(VERSION_FLAGS) $(PROJECT)/provider/v2/cmd/$(CODEGEN)
+	cd provider && $(GO) install $(BUILD_FLAGS) $(VERSION_FLAGS) $(PROJECT)/provider/v2/cmd/$(PROVIDER)
+	cd provider && $(GO) install $(BUILD_FLAGS) $(VERSION_FLAGS) $(PROJECT)/provider/v2/cmd/$(CODEGEN)
 	# Delete only files and folders that are generated.
 	rm -r sdk/python/pulumi_kubernetes/*/ sdk/python/pulumi_kubernetes/__init__.py
 	for LANGUAGE in "dotnet" "go" "nodejs" "python"; do \
@@ -67,7 +68,7 @@ lint::
 	done
 
 install::
-	cd provider && GOBIN=$(PULUMI_BIN) $(GO) install $(VERSION_FLAGS) $(PROJECT)/provider/v2/cmd/$(PROVIDER)
+	cd provider && GOBIN=$(PULUMI_BIN) $(GO) install $(BUILD_FLAGS) $(VERSION_FLAGS) $(PROJECT)/provider/v2/cmd/$(PROVIDER)
 	[ ! -e "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)" ] || rm -rf "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
 	mkdir -p "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
 	cp -r sdk/nodejs/bin/. "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
