@@ -224,7 +224,7 @@
                     "items": {
                         "type": "string"
                     },
-                    "description": "Operations is the operations the admission hook cares about - CREATE, UPDATE, or * for all operations. If '*' is present, the length of the slice must be one. Required."
+                    "description": "Operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or * for all of those operations and any future admission operations that are added. If '*' is present, the length of the slice must be one. Required."
                 },
                 "resources": {
                     "type": "array",
@@ -641,7 +641,7 @@
                     "items": {
                         "type": "string"
                     },
-                    "description": "Operations is the operations the admission hook cares about - CREATE, UPDATE, or * for all operations. If '*' is present, the length of the slice must be one. Required."
+                    "description": "Operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or * for all of those operations and any future admission operations that are added. If '*' is present, the length of the slice must be one. Required."
                 },
                 "resources": {
                     "type": "array",
@@ -2680,7 +2680,7 @@
                 },
                 "service": {
                     "$ref": "#/types/kubernetes:apiregistration.k8s.io/v1:ServiceReference",
-                    "description": "Service is a reference to the service for this API server.  It must communicate on port 443 If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled."
+                    "description": "Service is a reference to the service for this API server.  It must communicate on port 443. If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled."
                 },
                 "version": {
                     "type": "string",
@@ -2895,7 +2895,7 @@
                 },
                 "service": {
                     "$ref": "#/types/kubernetes:apiregistration.k8s.io/v1beta1:ServiceReference",
-                    "description": "Service is a reference to the service for this API server.  It must communicate on port 443 If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled."
+                    "description": "Service is a reference to the service for this API server.  It must communicate on port 443. If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled."
                 },
                 "version": {
                     "type": "string",
@@ -9909,6 +9909,220 @@
                 }
             }
         },
+        "kubernetes:certificates.k8s.io/v1:CertificateSigningRequest": {
+            "description": "CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.\n\nKubelets use this API to obtain:\n 1. client certificates to authenticate to kube-apiserver (with the \"kubernetes.io/kube-apiserver-client-kubelet\" signerName).\n 2. serving certificates for TLS endpoints kube-apiserver can connect to securely (with the \"kubernetes.io/kubelet-serving\" signerName).\n\nThis API can be used to request client certificates to authenticate to kube-apiserver (with the \"kubernetes.io/kube-apiserver-client\" signerName), or to obtain certificates from custom non-Kubernetes signers.",
+            "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "const": "certificates.k8s.io/v1"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "const": "CertificateSigningRequest"
+                },
+                "metadata": {
+                    "$ref": "#/types/kubernetes:meta/v1:ObjectMeta"
+                },
+                "spec": {
+                    "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequestSpec",
+                    "description": "spec contains the certificate request, and is immutable after creation. Only the request, signerName, and usages fields can be set on creation. Other fields are derived by Kubernetes and cannot be modified by users."
+                },
+                "status": {
+                    "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequestStatus",
+                    "description": "status contains information about whether the request is approved or denied, and the certificate issued by the signer, or the failure condition indicating signer failure."
+                }
+            },
+            "type": "object",
+            "required": [
+                "spec"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredOutputs": [
+                        "apiVersion",
+                        "kind",
+                        "metadata",
+                        "spec",
+                        "status"
+                    ]
+                }
+            }
+        },
+        "kubernetes:certificates.k8s.io/v1:CertificateSigningRequestCondition": {
+            "description": "CertificateSigningRequestCondition describes a condition of a CertificateSigningRequest object",
+            "properties": {
+                "lastTransitionTime": {
+                    "type": "string",
+                    "description": "lastTransitionTime is the time the condition last transitioned from one status to another. If unset, when a new condition type is added or an existing condition's status is changed, the server defaults this to the current time."
+                },
+                "lastUpdateTime": {
+                    "type": "string",
+                    "description": "lastUpdateTime is the time of the last update to this condition"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "message contains a human readable message with details about the request state"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "reason indicates a brief reason for the request state"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "status of the condition, one of True, False, Unknown. Approved, Denied, and Failed conditions may not be \"False\" or \"Unknown\"."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "type of the condition. Known conditions are \"Approved\", \"Denied\", and \"Failed\".\n\nAn \"Approved\" condition is added via the /approval subresource, indicating the request was approved and should be issued by the signer.\n\nA \"Denied\" condition is added via the /approval subresource, indicating the request was denied and should not be issued by the signer.\n\nA \"Failed\" condition is added via the /status subresource, indicating the signer failed to issue the certificate.\n\nApproved and Denied conditions are mutually exclusive. Approved, Denied, and Failed conditions cannot be removed once added.\n\nOnly one condition of a given type is allowed."
+                }
+            },
+            "type": "object",
+            "required": [
+                "status",
+                "type"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredOutputs": [
+                        "lastTransitionTime",
+                        "lastUpdateTime",
+                        "message",
+                        "reason",
+                        "status",
+                        "type"
+                    ]
+                }
+            }
+        },
+        "kubernetes:certificates.k8s.io/v1:CertificateSigningRequestList": {
+            "description": "CertificateSigningRequestList is a collection of CertificateSigningRequest objects",
+            "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "const": "certificates.k8s.io/v1"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequest"
+                    },
+                    "description": "items is a collection of CertificateSigningRequest objects"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "const": "CertificateSigningRequestList"
+                },
+                "metadata": {
+                    "$ref": "#/types/kubernetes:meta/v1:ListMeta"
+                }
+            },
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredOutputs": [
+                        "apiVersion",
+                        "items",
+                        "kind",
+                        "metadata"
+                    ]
+                }
+            }
+        },
+        "kubernetes:certificates.k8s.io/v1:CertificateSigningRequestSpec": {
+            "description": "CertificateSigningRequestSpec contains the certificate request.",
+            "properties": {
+                "extra": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "description": "extra contains extra attributes of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable."
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "groups contains group membership of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable."
+                },
+                "request": {
+                    "type": "string",
+                    "description": "request contains an x509 certificate signing request encoded in a \"CERTIFICATE REQUEST\" PEM block. When serialized as JSON or YAML, the data is additionally base64-encoded."
+                },
+                "signerName": {
+                    "type": "string",
+                    "description": "signerName indicates the requested signer, and is a qualified name.\n\nList/watch requests for CertificateSigningRequests can filter on this field using a \"spec.signerName=NAME\" fieldSelector.\n\nWell-known Kubernetes signers are:\n 1. \"kubernetes.io/kube-apiserver-client\": issues client certificates that can be used to authenticate to kube-apiserver.\n  Requests for this signer are never auto-approved by kube-controller-manager, can be issued by the \"csrsigning\" controller in kube-controller-manager.\n 2. \"kubernetes.io/kube-apiserver-client-kubelet\": issues client certificates that kubelets use to authenticate to kube-apiserver.\n  Requests for this signer can be auto-approved by the \"csrapproving\" controller in kube-controller-manager, and can be issued by the \"csrsigning\" controller in kube-controller-manager.\n 3. \"kubernetes.io/kubelet-serving\" issues serving certificates that kubelets use to serve TLS endpoints, which kube-apiserver can connect to securely.\n  Requests for this signer are never auto-approved by kube-controller-manager, and can be issued by the \"csrsigning\" controller in kube-controller-manager.\n\nMore details are available at https://k8s.io/docs/reference/access-authn-authz/certificate-signing-requests/#kubernetes-signers\n\nCustom signerNames can also be specified. The signer defines:\n 1. Trust distribution: how trust (CA bundles) are distributed.\n 2. Permitted subjects: and behavior when a disallowed subject is requested.\n 3. Required, permitted, or forbidden x509 extensions in the request (including whether subjectAltNames are allowed, which types, restrictions on allowed values) and behavior when a disallowed extension is requested.\n 4. Required, permitted, or forbidden key usages / extended key usages.\n 5. Expiration/certificate lifetime: whether it is fixed by the signer, configurable by the admin.\n 6. Whether or not requests for CA certificates are allowed."
+                },
+                "uid": {
+                    "type": "string",
+                    "description": "uid contains the uid of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable."
+                },
+                "usages": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "usages specifies a set of key usages requested in the issued certificate.\n\nRequests for TLS client certificates typically request: \"digital signature\", \"key encipherment\", \"client auth\".\n\nRequests for TLS serving certificates typically request: \"key encipherment\", \"digital signature\", \"server auth\".\n\nValid values are:\n \"signing\", \"digital signature\", \"content commitment\",\n \"key encipherment\", \"key agreement\", \"data encipherment\",\n \"cert sign\", \"crl sign\", \"encipher only\", \"decipher only\", \"any\",\n \"server auth\", \"client auth\",\n \"code signing\", \"email protection\", \"s/mime\",\n \"ipsec end system\", \"ipsec tunnel\", \"ipsec user\",\n \"timestamping\", \"ocsp signing\", \"microsoft sgc\", \"netscape sgc\""
+                },
+                "username": {
+                    "type": "string",
+                    "description": "username contains the name of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable."
+                }
+            },
+            "type": "object",
+            "required": [
+                "request",
+                "signerName"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredOutputs": [
+                        "extra",
+                        "groups",
+                        "request",
+                        "signerName",
+                        "uid",
+                        "usages",
+                        "username"
+                    ]
+                }
+            }
+        },
+        "kubernetes:certificates.k8s.io/v1:CertificateSigningRequestStatus": {
+            "description": "CertificateSigningRequestStatus contains conditions used to indicate approved/denied/failed status of the request, and the issued certificate.",
+            "properties": {
+                "certificate": {
+                    "type": "string",
+                    "description": "certificate is populated with an issued certificate by the signer after an Approved condition is present. This field is set via the /status subresource. Once populated, this field is immutable.\n\nIf the certificate signing request is denied, a condition of type \"Denied\" is added and this field remains empty. If the signer cannot issue the certificate, a condition of type \"Failed\" is added and this field remains empty.\n\nValidation requirements:\n 1. certificate must contain one or more PEM blocks.\n 2. All PEM blocks must have the \"CERTIFICATE\" label, contain no headers, and the encoded data\n  must be a BER-encoded ASN.1 Certificate structure as described in section 4 of RFC5280.\n 3. Non-PEM content may appear before or after the \"CERTIFICATE\" PEM blocks and is unvalidated,\n  to allow for explanatory text as described in section 5.2 of RFC7468.\n\nIf more than one PEM block is present, and the definition of the requested spec.signerName does not indicate otherwise, the first block is the issued certificate, and subsequent blocks should be treated as intermediate certificates and presented in TLS handshakes.\n\nThe certificate is encoded in PEM format.\n\nWhen serialized as JSON or YAML, the data is additionally base64-encoded, so it consists of:\n\n    base64(\n    -----BEGIN CERTIFICATE-----\n    ...\n    -----END CERTIFICATE-----\n    )"
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequestCondition"
+                    },
+                    "description": "conditions applied to the request. Known conditions are \"Approved\", \"Denied\", and \"Failed\"."
+                }
+            },
+            "type": "object",
+            "language": {
+                "nodejs": {
+                    "requiredOutputs": [
+                        "certificate",
+                        "conditions"
+                    ]
+                }
+            }
+        },
         "kubernetes:certificates.k8s.io/v1beta1:CertificateSigningRequest": {
             "description": "Describes a certificate signing request",
             "properties": {
@@ -9949,6 +10163,10 @@
         },
         "kubernetes:certificates.k8s.io/v1beta1:CertificateSigningRequestCondition": {
             "properties": {
+                "lastTransitionTime": {
+                    "type": "string",
+                    "description": "lastTransitionTime is the time the condition last transitioned from one status to another. If unset, when a new condition type is added or an existing condition's status is changed, the server defaults this to the current time."
+                },
                 "lastUpdateTime": {
                     "type": "string",
                     "description": "timestamp for the last update to this condition"
@@ -9961,9 +10179,13 @@
                     "type": "string",
                     "description": "brief reason for the request state"
                 },
+                "status": {
+                    "type": "string",
+                    "description": "Status of the condition, one of True, False, Unknown. Approved, Denied, and Failed conditions may not be \"False\" or \"Unknown\". Defaults to \"True\". If unset, should be treated as \"True\"."
+                },
                 "type": {
                     "type": "string",
-                    "description": "request approval state, currently Approved or Denied."
+                    "description": "type of the condition. Known conditions include \"Approved\", \"Denied\", and \"Failed\"."
                 }
             },
             "type": "object",
@@ -9973,9 +10195,11 @@
             "language": {
                 "nodejs": {
                     "requiredOutputs": [
+                        "lastTransitionTime",
                         "lastUpdateTime",
                         "message",
                         "reason",
+                        "status",
                         "type"
                     ]
                 }
@@ -10055,7 +10279,7 @@
                     "items": {
                         "type": "string"
                     },
-                    "description": "allowedUsages specifies a set of usage contexts the key will be valid for. See: https://tools.ietf.org/html/rfc5280#section-4.2.1.3\n     https://tools.ietf.org/html/rfc5280#section-4.2.1.12"
+                    "description": "allowedUsages specifies a set of usage contexts the key will be valid for. See: https://tools.ietf.org/html/rfc5280#section-4.2.1.3\n     https://tools.ietf.org/html/rfc5280#section-4.2.1.12\nValid values are:\n \"signing\",\n \"digital signature\",\n \"content commitment\",\n \"key encipherment\",\n \"key agreement\",\n \"data encipherment\",\n \"cert sign\",\n \"crl sign\",\n \"encipher only\",\n \"decipher only\",\n \"any\",\n \"server auth\",\n \"client auth\",\n \"code signing\",\n \"email protection\",\n \"s/mime\",\n \"ipsec end system\",\n \"ipsec tunnel\",\n \"ipsec user\",\n \"timestamping\",\n \"ocsp signing\",\n \"microsoft sgc\",\n \"netscape sgc\""
                 },
                 "username": {
                     "type": "string",
@@ -11019,7 +11243,7 @@
                 },
                 "immutable": {
                     "type": "boolean",
-                    "description": "Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate."
+                    "description": "Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate."
                 },
                 "kind": {
                     "type": "string",
@@ -11214,7 +11438,7 @@
             "properties": {
                 "defaultMode": {
                     "type": "integer",
-                    "description": "Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                    "description": "Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
                 },
                 "items": {
                     "type": "array",
@@ -11692,7 +11916,7 @@
                 },
                 "mode": {
                     "type": "integer",
-                    "description": "Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                    "description": "Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
                 },
                 "path": {
                     "type": "string",
@@ -11723,7 +11947,7 @@
             "properties": {
                 "defaultMode": {
                     "type": "integer",
-                    "description": "Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                    "description": "Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
                 },
                 "items": {
                     "type": "array",
@@ -11805,7 +12029,7 @@
             "properties": {
                 "appProtocol": {
                     "type": "string",
-                    "description": "The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. Field can be enabled with ServiceAppProtocol feature gate."
+                    "description": "The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. This is a beta field that is guarded by the ServiceAppProtocol feature gate and enabled by default."
                 },
                 "name": {
                     "type": "string",
@@ -12014,7 +12238,7 @@
                 },
                 "fieldRef": {
                     "$ref": "#/types/kubernetes:core/v1:ObjectFieldSelector",
-                    "description": "Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                    "description": "Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['\u003cKEY\u003e']`, `metadata.annotations['\u003cKEY\u003e']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
                 },
                 "resourceFieldRef": {
                     "$ref": "#/types/kubernetes:core/v1:ResourceFieldSelector",
@@ -12995,7 +13219,7 @@
                 },
                 "mode": {
                     "type": "integer",
-                    "description": "Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                    "description": "Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
                 },
                 "path": {
                     "type": "string",
@@ -13982,7 +14206,7 @@
                 },
                 "systemUUID": {
                     "type": "string",
-                    "description": "SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-US/Red_Hat_Subscription_Management/1/html/RHSM/getting-system-uuid.html"
+                    "description": "SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid"
                 }
             },
             "type": "object",
@@ -15162,7 +15386,7 @@
                     "items": {
                         "$ref": "#/types/kubernetes:core/v1:TopologySpreadConstraint"
                     },
-                    "description": "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. This field is only honored by clusters that enable the EvenPodsSpread feature. All topologySpreadConstraints are ANDed."
+                    "description": "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed."
                 },
                 "volumes": {
                     "type": "array",
@@ -15518,7 +15742,7 @@
             "properties": {
                 "defaultMode": {
                     "type": "integer",
-                    "description": "Mode bits to use on created files by default. Must be a value between 0 and 0777. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                    "description": "Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
                 },
                 "sources": {
                     "type": "array",
@@ -16344,7 +16568,7 @@
                 },
                 "immutable": {
                     "type": "boolean",
-                    "description": "Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate."
+                    "description": "Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate."
                 },
                 "kind": {
                     "type": "string",
@@ -16532,7 +16756,7 @@
             "properties": {
                 "defaultMode": {
                     "type": "integer",
-                    "description": "Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
+                    "description": "Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set."
                 },
                 "items": {
                     "type": "array",
@@ -16828,7 +17052,7 @@
             "properties": {
                 "appProtocol": {
                     "type": "string",
-                    "description": "The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. Field can be enabled with ServiceAppProtocol feature gate."
+                    "description": "The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. This is a beta field that is guarded by the ServiceAppProtocol feature gate and enabled by default."
                 },
                 "name": {
                     "type": "string",
@@ -17274,7 +17498,7 @@
                 },
                 "maxSkew": {
                     "type": "integer",
-                    "description": "MaxSkew describes the degree to which pods may be unevenly distributed. It's the maximum permitted difference between the number of matching pods in any two topology domains of a given topology type. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 1/1/0: | zone1 | zone2 | zone3 | |   P   |   P   |       | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 1/1/1; scheduling it onto zone1(zone2) would make the ActualSkew(2-0) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. It's a required field. Default value is 1 and 0 is not allowed."
+                    "description": "MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 1/1/0: | zone1 | zone2 | zone3 | |   P   |   P   |       | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 1/1/1; scheduling it onto zone1(zone2) would make the ActualSkew(2-0) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed."
                 },
                 "topologyKey": {
                     "type": "string",
@@ -17282,7 +17506,7 @@
                 },
                 "whenUnsatisfiable": {
                     "type": "string",
-                    "description": "WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it - ScheduleAnyway tells the scheduler to still schedule it It's considered as \"Unsatisfiable\" if and only if placing incoming pod on any topology violates \"MaxSkew\". For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field."
+                    "description": "WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it. - ScheduleAnyway tells the scheduler to schedule the pod in any location,\n  but giving higher precedence to topologies that would help reduce the\n  skew.\nA constraint is considered \"Unsatisfiable\" for an incoming pod if and only if every possible node assigment for that pod would violate \"MaxSkew\" on some topology. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field."
                 }
             },
             "type": "object",
@@ -18051,8 +18275,7 @@
             "type": "object",
             "required": [
                 "count",
-                "lastObservedTime",
-                "state"
+                "lastObservedTime"
             ],
             "language": {
                 "nodejs": {
@@ -21228,7 +21451,7 @@
                 },
                 "namespace": {
                     "type": "string",
-                    "description": "Namespace defines the space within each name must be unique. An empty namespace is equivalent to the \"default\" namespace, but \"default\" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.\n\nMust be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces"
+                    "description": "Namespace defines the space within which each name must be unique. An empty namespace is equivalent to the \"default\" namespace, but \"default\" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.\n\nMust be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces"
                 },
                 "ownerReferences": {
                     "type": "array",
@@ -21686,7 +21909,7 @@
             }
         },
         "kubernetes:networking.k8s.io/v1:NetworkPolicyPeer": {
-            "description": "NetworkPolicyPeer describes a peer to allow traffic from. Only certain combinations of fields are allowed",
+            "description": "NetworkPolicyPeer describes a peer to allow traffic to/from. Only certain combinations of fields are allowed",
             "properties": {
                 "ipBlock": {
                     "$ref": "#/types/kubernetes:networking.k8s.io/v1:IPBlock",
@@ -23712,7 +23935,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRole": {
-            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.20.",
+            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.22.",
             "properties": {
                 "aggregationRule": {
                     "$ref": "#/types/kubernetes:rbac.authorization.k8s.io/v1alpha1:AggregationRule",
@@ -23754,7 +23977,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRoleBinding": {
-            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -23799,7 +24022,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRoleBindingList": {
-            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindings, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindings, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -23839,7 +24062,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRoleList": {
-            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.20.",
+            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -23934,7 +24157,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:Role": {
-            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.20.",
+            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -23971,7 +24194,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:RoleBinding": {
-            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.20.",
+            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24016,7 +24239,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:RoleBindingList": {
-            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.20.",
+            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24056,7 +24279,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:RoleList": {
-            "description": "RoleList is a collection of Roles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.20.",
+            "description": "RoleList is a collection of Roles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24184,7 +24407,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRole": {
-            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.20.",
+            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.22.",
             "properties": {
                 "aggregationRule": {
                     "$ref": "#/types/kubernetes:rbac.authorization.k8s.io/v1beta1:AggregationRule",
@@ -24226,7 +24449,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRoleBinding": {
-            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24271,7 +24494,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRoleBindingList": {
-            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindingList, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindingList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24311,7 +24534,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRoleList": {
-            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.20.",
+            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24406,7 +24629,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:Role": {
-            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.20.",
+            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24443,7 +24666,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:RoleBinding": {
-            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.20.",
+            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24488,7 +24711,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:RoleBindingList": {
-            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.20.",
+            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -24528,7 +24751,7 @@
             }
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:RoleList": {
-            "description": "RoleList is a collection of Roles Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.20.",
+            "description": "RoleList is a collection of Roles Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -30192,6 +30415,117 @@
                 "items"
             ]
         },
+        "kubernetes:certificates.k8s.io/v1:CertificateSigningRequest": {
+            "description": "CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.\n\nKubelets use this API to obtain:\n 1. client certificates to authenticate to kube-apiserver (with the \"kubernetes.io/kube-apiserver-client-kubelet\" signerName).\n 2. serving certificates for TLS endpoints kube-apiserver can connect to securely (with the \"kubernetes.io/kubelet-serving\" signerName).\n\nThis API can be used to request client certificates to authenticate to kube-apiserver (with the \"kubernetes.io/kube-apiserver-client\" signerName), or to obtain certificates from custom non-Kubernetes signers.",
+            "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "const": "certificates.k8s.io/v1"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "const": "CertificateSigningRequest"
+                },
+                "metadata": {
+                    "$ref": "#/types/kubernetes:meta/v1:ObjectMeta"
+                },
+                "spec": {
+                    "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequestSpec",
+                    "description": "spec contains the certificate request, and is immutable after creation. Only the request, signerName, and usages fields can be set on creation. Other fields are derived by Kubernetes and cannot be modified by users."
+                },
+                "status": {
+                    "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequestStatus",
+                    "description": "status contains information about whether the request is approved or denied, and the certificate issued by the signer, or the failure condition indicating signer failure."
+                }
+            },
+            "type": "object",
+            "required": [
+                "spec"
+            ],
+            "inputProperties": {
+                "apiVersion": {
+                    "type": "string",
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "const": "certificates.k8s.io/v1"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "const": "CertificateSigningRequest"
+                },
+                "metadata": {
+                    "$ref": "#/types/kubernetes:meta/v1:ObjectMeta"
+                },
+                "spec": {
+                    "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequestSpec",
+                    "description": "spec contains the certificate request, and is immutable after creation. Only the request, signerName, and usages fields can be set on creation. Other fields are derived by Kubernetes and cannot be modified by users."
+                }
+            },
+            "requiredInputs": [
+                "spec"
+            ],
+            "aliases": [
+                {
+                    "type": "kubernetes:certificates.k8s.io/v1beta1:CertificateSigningRequest"
+                }
+            ]
+        },
+        "kubernetes:certificates.k8s.io/v1:CertificateSigningRequestList": {
+            "description": "CertificateSigningRequestList is a collection of CertificateSigningRequest objects",
+            "properties": {
+                "apiVersion": {
+                    "type": "string",
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "const": "certificates.k8s.io/v1"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequest"
+                    },
+                    "description": "items is a collection of CertificateSigningRequest objects"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "const": "CertificateSigningRequestList"
+                },
+                "metadata": {
+                    "$ref": "#/types/kubernetes:meta/v1:ListMeta"
+                }
+            },
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "inputProperties": {
+                "apiVersion": {
+                    "type": "string",
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "const": "certificates.k8s.io/v1"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/types/kubernetes:certificates.k8s.io/v1:CertificateSigningRequest"
+                    },
+                    "description": "items is a collection of CertificateSigningRequest objects"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "const": "CertificateSigningRequestList"
+                },
+                "metadata": {
+                    "$ref": "#/types/kubernetes:meta/v1:ListMeta"
+                }
+            },
+            "requiredInputs": [
+                "items"
+            ]
+        },
         "kubernetes:certificates.k8s.io/v1beta1:CertificateSigningRequest": {
             "description": "Describes a certificate signing request",
             "properties": {
@@ -30236,7 +30570,12 @@
                     "$ref": "#/types/kubernetes:certificates.k8s.io/v1beta1:CertificateSigningRequestSpec",
                     "description": "The certificate request itself and any additional information."
                 }
-            }
+            },
+            "aliases": [
+                {
+                    "type": "kubernetes:certificates.k8s.io/v1:CertificateSigningRequest"
+                }
+            ]
         },
         "kubernetes:certificates.k8s.io/v1beta1:CertificateSigningRequestList": {
             "properties": {
@@ -30679,7 +31018,7 @@
                 },
                 "immutable": {
                     "type": "boolean",
-                    "description": "Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate."
+                    "description": "Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate."
                 },
                 "kind": {
                     "type": "string",
@@ -30714,7 +31053,7 @@
                 },
                 "immutable": {
                     "type": "boolean",
-                    "description": "Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate."
+                    "description": "Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate."
                 },
                 "kind": {
                     "type": "string",
@@ -32052,7 +32391,7 @@
                 },
                 "immutable": {
                     "type": "boolean",
-                    "description": "Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate."
+                    "description": "Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate."
                 },
                 "kind": {
                     "type": "string",
@@ -32093,7 +32432,7 @@
                 },
                 "immutable": {
                     "type": "boolean",
-                    "description": "Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate."
+                    "description": "Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate."
                 },
                 "kind": {
                     "type": "string",
@@ -34950,7 +35289,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRole": {
-            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.20.",
+            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.22.",
             "properties": {
                 "aggregationRule": {
                     "$ref": "#/types/kubernetes:rbac.authorization.k8s.io/v1alpha1:AggregationRule",
@@ -35016,7 +35355,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRoleBinding": {
-            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35088,7 +35427,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRoleBindingList": {
-            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindings, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindings, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35144,7 +35483,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:ClusterRoleList": {
-            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.20.",
+            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35200,7 +35539,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:Role": {
-            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.20.",
+            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35258,7 +35597,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:RoleBinding": {
-            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.20.",
+            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35330,7 +35669,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:RoleBindingList": {
-            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.20.",
+            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35386,7 +35725,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1alpha1:RoleList": {
-            "description": "RoleList is a collection of Roles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.20.",
+            "description": "RoleList is a collection of Roles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35442,7 +35781,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRole": {
-            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.20.",
+            "description": "ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.22.",
             "properties": {
                 "aggregationRule": {
                     "$ref": "#/types/kubernetes:rbac.authorization.k8s.io/v1beta1:AggregationRule",
@@ -35508,7 +35847,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRoleBinding": {
-            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35580,7 +35919,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRoleBindingList": {
-            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindingList, and will no longer be served in v1.20.",
+            "description": "ClusterRoleBindingList is a collection of ClusterRoleBindings. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBindingList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35636,7 +35975,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:ClusterRoleList": {
-            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.20.",
+            "description": "ClusterRoleList is a collection of ClusterRoles. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoles, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35692,7 +36031,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:Role": {
-            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.20.",
+            "description": "Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35750,7 +36089,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:RoleBinding": {
-            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.20.",
+            "description": "RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35822,7 +36161,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:RoleBindingList": {
-            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.20.",
+            "description": "RoleBindingList is a collection of RoleBindings Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBindingList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -35878,7 +36217,7 @@
             ]
         },
         "kubernetes:rbac.authorization.k8s.io/v1beta1:RoleList": {
-            "description": "RoleList is a collection of Roles Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.20.",
+            "description": "RoleList is a collection of Roles Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleList, and will no longer be served in v1.22.",
             "properties": {
                 "apiVersion": {
                     "type": "string",
@@ -37622,6 +37961,7 @@
                 "batch/v1": "Batch.V1",
                 "batch/v1beta1": "Batch.V1Beta1",
                 "batch/v2alpha1": "Batch.V2Alpha1",
+                "certificates.k8s.io/v1": "Certificates.V1",
                 "certificates.k8s.io/v1beta1": "Certificates.V1Beta1",
                 "coordination.k8s.io/v1": "Coordination.V1",
                 "coordination.k8s.io/v1beta1": "Coordination.V1Beta1",
@@ -37677,6 +38017,7 @@
                 "batch/v1": "batch/v1",
                 "batch/v1beta1": "batch/v1beta1",
                 "batch/v2alpha1": "batch/v2alpha1",
+                "certificates.k8s.io/v1": "certificates/v1",
                 "certificates.k8s.io/v1beta1": "certificates/v1beta1",
                 "coordination.k8s.io/v1": "coordination/v1",
                 "coordination.k8s.io/v1beta1": "coordination/v1beta1",
@@ -37724,6 +38065,7 @@
                 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/batch/v1": "batchv1",
                 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/batch/v1beta1": "batchv1beta1",
                 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/batch/v2alpha1": "batchv2alpha1",
+                "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/certificates/v1": "certificatesv1",
                 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/certificates/v1beta1": "certificatesv1beta1",
                 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/coordination/v1": "coordinationv1",
                 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/coordination/v1beta1": "coordinationv1beta1",
@@ -37789,6 +38131,7 @@
                 "batch/v1": "batch/v1",
                 "batch/v1beta1": "batch/v1beta1",
                 "batch/v2alpha1": "batch/v2alpha1",
+                "certificates.k8s.io/v1": "certificates/v1",
                 "certificates.k8s.io/v1beta1": "certificates/v1beta1",
                 "coordination.k8s.io/v1": "coordination/v1",
                 "coordination.k8s.io/v1beta1": "coordination/v1beta1",
@@ -37840,6 +38183,7 @@
                 "batch/v1": "batch/v1",
                 "batch/v1beta1": "batch/v1beta1",
                 "batch/v2alpha1": "batch/v2alpha1",
+                "certificates.k8s.io/v1": "certificates/v1",
                 "certificates.k8s.io/v1beta1": "certificates/v1beta1",
                 "coordination.k8s.io/v1": "coordination/v1",
                 "coordination.k8s.io/v1beta1": "coordination/v1beta1",

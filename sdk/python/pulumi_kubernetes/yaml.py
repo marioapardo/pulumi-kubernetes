@@ -594,6 +594,18 @@ def _parse_yaml_object(
         return [identifier.apply(
             lambda x: (f"batch/v2alpha1/CronJobList:{x}",
                        CronJobList(f"{x}", opts, **obj)))]
+    if gvk == "certificates.k8s.io/v1/CertificateSigningRequest":
+        # Import locally to avoid name collisions.
+        from pulumi_kubernetes.certificates.v1 import CertificateSigningRequest
+        return [identifier.apply(
+            lambda x: (f"certificates.k8s.io/v1/CertificateSigningRequest:{x}",
+                       CertificateSigningRequest(f"{x}", opts, **obj)))]
+    if gvk == "certificates.k8s.io/v1/CertificateSigningRequestList":
+        # Import locally to avoid name collisions.
+        from pulumi_kubernetes.certificates.v1 import CertificateSigningRequestList
+        return [identifier.apply(
+            lambda x: (f"certificates.k8s.io/v1/CertificateSigningRequestList:{x}",
+                       CertificateSigningRequestList(f"{x}", opts, **obj)))]
     if gvk == "certificates.k8s.io/v1beta1/CertificateSigningRequest":
         # Import locally to avoid name collisions.
         from pulumi_kubernetes.certificates.v1beta1 import CertificateSigningRequest

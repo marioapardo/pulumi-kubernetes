@@ -47,6 +47,7 @@ import (
 	batchv1 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/batch/v1"
 	batchv1beta1 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/batch/v1beta1"
 	batchv2alpha1 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/batch/v2alpha1"
+	certificatesv1 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/certificates/v1"
 	certificatesv1beta1 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/certificates/v1beta1"
 	coordinationv1 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/coordination/v1"
 	coordinationv1beta1 "github.com/pulumi/pulumi-kubernetes/sdk/v2/go/kubernetes/coordination/v1beta1"
@@ -232,6 +233,7 @@ func parseYamlObject(ctx *pulumi.Context, obj map[string]interface{}, transforma
 		"batch/v1/JobList",
 		"batch/v1beta1/CronJobList",
 		"batch/v2alpha1/CronJobList",
+		"certificates.k8s.io/v1/CertificateSigningRequestList",
 		"certificates.k8s.io/v1beta1/CertificateSigningRequestList",
 		"coordination.k8s.io/v1/LeaseList",
 		"coordination.k8s.io/v1beta1/LeaseList",
@@ -608,6 +610,13 @@ func parseYamlObject(ctx *pulumi.Context, obj map[string]interface{}, transforma
 	case "batch/v2alpha1/CronJob":
 		var res batchv2alpha1.CronJob
 		err := ctx.RegisterResource("kubernetes:batch/v2alpha1:CronJob", metaName, kubernetes.UntypedArgs(obj), &res, opts...)
+		if err != nil {
+			return nil, err
+		}
+		return []resourceTuple{{Name: key, Resource: &res}}, nil
+	case "certificates.k8s.io/v1/CertificateSigningRequest":
+		var res certificatesv1.CertificateSigningRequest
+		err := ctx.RegisterResource("kubernetes:certificates.k8s.io/v1:CertificateSigningRequest", metaName, kubernetes.UntypedArgs(obj), &res, opts...)
 		if err != nil {
 			return nil, err
 		}

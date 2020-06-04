@@ -30,8 +30,8 @@ namespace Pulumi.Kubernetes.Types.Inputs.Events.V1Beta1
         /// <summary>
         /// Information whether this series is ongoing or finished. Deprecated. Planned removal for 1.18
         /// </summary>
-        [Input("state", required: true)]
-        public Input<string> State { get; set; } = null!;
+        [Input("state")]
+        public Input<string>? State { get; set; }
 
         public EventSeriesArgs()
         {

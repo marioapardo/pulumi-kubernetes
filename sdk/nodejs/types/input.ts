@@ -134,7 +134,7 @@ export namespace admissionregistration {
              */
             apiVersions?: pulumi.Input<pulumi.Input<string>[]>;
             /**
-             * Operations is the operations the admission hook cares about - CREATE, UPDATE, or * for all operations. If '*' is present, the length of the slice must be one. Required.
+             * Operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or * for all of those operations and any future admission operations that are added. If '*' is present, the length of the slice must be one. Required.
              */
             operations?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -438,7 +438,7 @@ export namespace admissionregistration {
              */
             apiVersions?: pulumi.Input<pulumi.Input<string>[]>;
             /**
-             * Operations is the operations the admission hook cares about - CREATE, UPDATE, or * for all operations. If '*' is present, the length of the slice must be one. Required.
+             * Operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or * for all of those operations and any future admission operations that are added. If '*' is present, the length of the slice must be one. Required.
              */
             operations?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -1552,7 +1552,7 @@ export namespace apiregistration {
              */
             insecureSkipTLSVerify?: pulumi.Input<boolean>;
             /**
-             * Service is a reference to the service for this API server.  It must communicate on port 443 If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled.
+             * Service is a reference to the service for this API server.  It must communicate on port 443. If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled.
              */
             service?: pulumi.Input<inputs.apiregistration.v1.ServiceReference>;
             /**
@@ -1665,7 +1665,7 @@ export namespace apiregistration {
              */
             insecureSkipTLSVerify?: pulumi.Input<boolean>;
             /**
-             * Service is a reference to the service for this API server.  It must communicate on port 443 If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled.
+             * Service is a reference to the service for this API server.  It must communicate on port 443. If the Service is nil, that means the handling for the API groupversion is handled locally on this server. The call will simply delegate to the normal handler chain to be fulfilled.
              */
             service?: pulumi.Input<inputs.apiregistration.v1beta1.ServiceReference>;
             /**
@@ -4951,6 +4951,179 @@ export namespace batch {
 }
 
 export namespace certificates {
+    export namespace v1 {
+        /**
+         * CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.
+         *
+         * Kubelets use this API to obtain:
+         *  1. client certificates to authenticate to kube-apiserver (with the "kubernetes.io/kube-apiserver-client-kubelet" signerName).
+         *  2. serving certificates for TLS endpoints kube-apiserver can connect to securely (with the "kubernetes.io/kubelet-serving" signerName).
+         *
+         * This API can be used to request client certificates to authenticate to kube-apiserver (with the "kubernetes.io/kube-apiserver-client" signerName), or to obtain certificates from custom non-Kubernetes signers.
+         */
+        export interface CertificateSigningRequest {
+            /**
+             * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+             */
+            apiVersion?: pulumi.Input<"certificates.k8s.io/v1">;
+            /**
+             * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<"CertificateSigningRequest">;
+            metadata?: pulumi.Input<inputs.meta.v1.ObjectMeta>;
+            /**
+             * spec contains the certificate request, and is immutable after creation. Only the request, signerName, and usages fields can be set on creation. Other fields are derived by Kubernetes and cannot be modified by users.
+             */
+            spec: pulumi.Input<inputs.certificates.v1.CertificateSigningRequestSpec>;
+            /**
+             * status contains information about whether the request is approved or denied, and the certificate issued by the signer, or the failure condition indicating signer failure.
+             */
+            status?: pulumi.Input<inputs.certificates.v1.CertificateSigningRequestStatus>;
+        }
+
+        /**
+         * CertificateSigningRequestCondition describes a condition of a CertificateSigningRequest object
+         */
+        export interface CertificateSigningRequestCondition {
+            /**
+             * lastTransitionTime is the time the condition last transitioned from one status to another. If unset, when a new condition type is added or an existing condition's status is changed, the server defaults this to the current time.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * lastUpdateTime is the time of the last update to this condition
+             */
+            lastUpdateTime?: pulumi.Input<string>;
+            /**
+             * message contains a human readable message with details about the request state
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * reason indicates a brief reason for the request state
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * status of the condition, one of True, False, Unknown. Approved, Denied, and Failed conditions may not be "False" or "Unknown".
+             */
+            status: pulumi.Input<string>;
+            /**
+             * type of the condition. Known conditions are "Approved", "Denied", and "Failed".
+             *
+             * An "Approved" condition is added via the /approval subresource, indicating the request was approved and should be issued by the signer.
+             *
+             * A "Denied" condition is added via the /approval subresource, indicating the request was denied and should not be issued by the signer.
+             *
+             * A "Failed" condition is added via the /status subresource, indicating the signer failed to issue the certificate.
+             *
+             * Approved and Denied conditions are mutually exclusive. Approved, Denied, and Failed conditions cannot be removed once added.
+             *
+             * Only one condition of a given type is allowed.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * CertificateSigningRequestSpec contains the certificate request.
+         */
+        export interface CertificateSigningRequestSpec {
+            /**
+             * extra contains extra attributes of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.
+             */
+            extra?: pulumi.Input<{[key: string]: pulumi.Input<pulumi.Input<string>[]>}>;
+            /**
+             * groups contains group membership of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.
+             */
+            groups?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * request contains an x509 certificate signing request encoded in a "CERTIFICATE REQUEST" PEM block. When serialized as JSON or YAML, the data is additionally base64-encoded.
+             */
+            request: pulumi.Input<string>;
+            /**
+             * signerName indicates the requested signer, and is a qualified name.
+             *
+             * List/watch requests for CertificateSigningRequests can filter on this field using a "spec.signerName=NAME" fieldSelector.
+             *
+             * Well-known Kubernetes signers are:
+             *  1. "kubernetes.io/kube-apiserver-client": issues client certificates that can be used to authenticate to kube-apiserver.
+             *   Requests for this signer are never auto-approved by kube-controller-manager, can be issued by the "csrsigning" controller in kube-controller-manager.
+             *  2. "kubernetes.io/kube-apiserver-client-kubelet": issues client certificates that kubelets use to authenticate to kube-apiserver.
+             *   Requests for this signer can be auto-approved by the "csrapproving" controller in kube-controller-manager, and can be issued by the "csrsigning" controller in kube-controller-manager.
+             *  3. "kubernetes.io/kubelet-serving" issues serving certificates that kubelets use to serve TLS endpoints, which kube-apiserver can connect to securely.
+             *   Requests for this signer are never auto-approved by kube-controller-manager, and can be issued by the "csrsigning" controller in kube-controller-manager.
+             *
+             * More details are available at https://k8s.io/docs/reference/access-authn-authz/certificate-signing-requests/#kubernetes-signers
+             *
+             * Custom signerNames can also be specified. The signer defines:
+             *  1. Trust distribution: how trust (CA bundles) are distributed.
+             *  2. Permitted subjects: and behavior when a disallowed subject is requested.
+             *  3. Required, permitted, or forbidden x509 extensions in the request (including whether subjectAltNames are allowed, which types, restrictions on allowed values) and behavior when a disallowed extension is requested.
+             *  4. Required, permitted, or forbidden key usages / extended key usages.
+             *  5. Expiration/certificate lifetime: whether it is fixed by the signer, configurable by the admin.
+             *  6. Whether or not requests for CA certificates are allowed.
+             */
+            signerName: pulumi.Input<string>;
+            /**
+             * uid contains the uid of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.
+             */
+            uid?: pulumi.Input<string>;
+            /**
+             * usages specifies a set of key usages requested in the issued certificate.
+             *
+             * Requests for TLS client certificates typically request: "digital signature", "key encipherment", "client auth".
+             *
+             * Requests for TLS serving certificates typically request: "key encipherment", "digital signature", "server auth".
+             *
+             * Valid values are:
+             *  "signing", "digital signature", "content commitment",
+             *  "key encipherment", "key agreement", "data encipherment",
+             *  "cert sign", "crl sign", "encipher only", "decipher only", "any",
+             *  "server auth", "client auth",
+             *  "code signing", "email protection", "s/mime",
+             *  "ipsec end system", "ipsec tunnel", "ipsec user",
+             *  "timestamping", "ocsp signing", "microsoft sgc", "netscape sgc"
+             */
+            usages?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * username contains the name of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.
+             */
+            username?: pulumi.Input<string>;
+        }
+
+        /**
+         * CertificateSigningRequestStatus contains conditions used to indicate approved/denied/failed status of the request, and the issued certificate.
+         */
+        export interface CertificateSigningRequestStatus {
+            /**
+             * certificate is populated with an issued certificate by the signer after an Approved condition is present. This field is set via the /status subresource. Once populated, this field is immutable.
+             *
+             * If the certificate signing request is denied, a condition of type "Denied" is added and this field remains empty. If the signer cannot issue the certificate, a condition of type "Failed" is added and this field remains empty.
+             *
+             * Validation requirements:
+             *  1. certificate must contain one or more PEM blocks.
+             *  2. All PEM blocks must have the "CERTIFICATE" label, contain no headers, and the encoded data
+             *   must be a BER-encoded ASN.1 Certificate structure as described in section 4 of RFC5280.
+             *  3. Non-PEM content may appear before or after the "CERTIFICATE" PEM blocks and is unvalidated,
+             *   to allow for explanatory text as described in section 5.2 of RFC7468.
+             *
+             * If more than one PEM block is present, and the definition of the requested spec.signerName does not indicate otherwise, the first block is the issued certificate, and subsequent blocks should be treated as intermediate certificates and presented in TLS handshakes.
+             *
+             * The certificate is encoded in PEM format.
+             *
+             * When serialized as JSON or YAML, the data is additionally base64-encoded, so it consists of:
+             *
+             *     base64(
+             *     -----BEGIN CERTIFICATE-----
+             *     ...
+             *     -----END CERTIFICATE-----
+             *     )
+             */
+            certificate?: pulumi.Input<string>;
+            /**
+             * conditions applied to the request. Known conditions are "Approved", "Denied", and "Failed".
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.certificates.v1.CertificateSigningRequestCondition>[]>;
+        }
+    }
+
     export namespace v1beta1 {
         /**
          * Describes a certificate signing request
@@ -4977,6 +5150,10 @@ export namespace certificates {
 
         export interface CertificateSigningRequestCondition {
             /**
+             * lastTransitionTime is the time the condition last transitioned from one status to another. If unset, when a new condition type is added or an existing condition's status is changed, the server defaults this to the current time.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
              * timestamp for the last update to this condition
              */
             lastUpdateTime?: pulumi.Input<string>;
@@ -4989,7 +5166,11 @@ export namespace certificates {
              */
             reason?: pulumi.Input<string>;
             /**
-             * request approval state, currently Approved or Denied.
+             * Status of the condition, one of True, False, Unknown. Approved, Denied, and Failed conditions may not be "False" or "Unknown". Defaults to "True". If unset, should be treated as "True".
+             */
+            status?: pulumi.Input<string>;
+            /**
+             * type of the condition. Known conditions include "Approved", "Denied", and "Failed".
              */
             type: pulumi.Input<string>;
         }
@@ -5027,6 +5208,30 @@ export namespace certificates {
             /**
              * allowedUsages specifies a set of usage contexts the key will be valid for. See: https://tools.ietf.org/html/rfc5280#section-4.2.1.3
              *      https://tools.ietf.org/html/rfc5280#section-4.2.1.12
+             * Valid values are:
+             *  "signing",
+             *  "digital signature",
+             *  "content commitment",
+             *  "key encipherment",
+             *  "key agreement",
+             *  "data encipherment",
+             *  "cert sign",
+             *  "crl sign",
+             *  "encipher only",
+             *  "decipher only",
+             *  "any",
+             *  "server auth",
+             *  "client auth",
+             *  "code signing",
+             *  "email protection",
+             *  "s/mime",
+             *  "ipsec end system",
+             *  "ipsec tunnel",
+             *  "ipsec user",
+             *  "timestamping",
+             *  "ocsp signing",
+             *  "microsoft sgc",
+             *  "netscape sgc"
              */
             usages?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -5537,7 +5742,7 @@ export namespace core {
              */
             data?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
             /**
-             * Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate.
+             * Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate.
              */
             immutable?: pulumi.Input<boolean>;
             /**
@@ -5637,7 +5842,7 @@ export namespace core {
          */
         export interface ConfigMapVolumeSource {
             /**
-             * Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+             * Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
              */
             defaultMode?: pulumi.Input<number>;
             /**
@@ -5935,7 +6140,7 @@ export namespace core {
              */
             fieldRef?: pulumi.Input<inputs.core.v1.ObjectFieldSelector>;
             /**
-             * Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+             * Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
              */
             mode?: pulumi.Input<number>;
             /**
@@ -5953,7 +6158,7 @@ export namespace core {
          */
         export interface DownwardAPIVolumeSource {
             /**
-             * Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+             * Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
              */
             defaultMode?: pulumi.Input<number>;
             /**
@@ -6003,7 +6208,7 @@ export namespace core {
          */
         export interface EndpointPort {
             /**
-             * The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. Field can be enabled with ServiceAppProtocol feature gate.
+             * The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. This is a beta field that is guarded by the ServiceAppProtocol feature gate and enabled by default.
              */
             appProtocol?: pulumi.Input<string>;
             /**
@@ -6123,7 +6328,7 @@ export namespace core {
              */
             configMapKeyRef?: pulumi.Input<inputs.core.v1.ConfigMapKeySelector>;
             /**
-             * Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+             * Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
              */
             fieldRef?: pulumi.Input<inputs.core.v1.ObjectFieldSelector>;
             /**
@@ -6721,7 +6926,7 @@ export namespace core {
              */
             key: pulumi.Input<string>;
             /**
-             * Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+             * Optional: mode bits used to set permissions on this file. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
              */
             mode?: pulumi.Input<number>;
             /**
@@ -7232,7 +7437,7 @@ export namespace core {
              */
             osImage: pulumi.Input<string>;
             /**
-             * SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-US/Red_Hat_Subscription_Management/1/html/RHSM/getting-system-uuid.html
+             * SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid
              */
             systemUUID: pulumi.Input<string>;
         }
@@ -7935,7 +8140,7 @@ export namespace core {
              */
             tolerations?: pulumi.Input<pulumi.Input<inputs.core.v1.Toleration>[]>;
             /**
-             * TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. This field is only honored by clusters that enable the EvenPodsSpread feature. All topologySpreadConstraints are ANDed.
+             * TopologySpreadConstraints describes how a group of pods ought to spread across topology domains. Scheduler will schedule pods in a way which abides by the constraints. All topologySpreadConstraints are ANDed.
              */
             topologySpreadConstraints?: pulumi.Input<pulumi.Input<inputs.core.v1.TopologySpreadConstraint>[]>;
             /**
@@ -8117,7 +8322,7 @@ export namespace core {
          */
         export interface ProjectedVolumeSource {
             /**
-             * Mode bits to use on created files by default. Must be a value between 0 and 0777. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+             * Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
              */
             defaultMode?: pulumi.Input<number>;
             /**
@@ -8591,7 +8796,7 @@ export namespace core {
              */
             data?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
             /**
-             * Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is an alpha field enabled by ImmutableEphemeralVolumes feature gate.
+             * Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil. This is a beta field enabled by ImmutableEphemeralVolumes feature gate.
              */
             immutable?: pulumi.Input<boolean>;
             /**
@@ -8687,7 +8892,7 @@ export namespace core {
          */
         export interface SecretVolumeSource {
             /**
-             * Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
+             * Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
              */
             defaultMode?: pulumi.Input<number>;
             /**
@@ -8854,7 +9059,7 @@ export namespace core {
          */
         export interface ServicePort {
             /**
-             * The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. Field can be enabled with ServiceAppProtocol feature gate.
+             * The application protocol for this port. This field follows standard Kubernetes label syntax. Un-prefixed names are reserved for IANA standard service names (as per RFC-6335 and http://www.iana.org/assignments/service-names). Non-standard protocols should use prefixed names such as mycompany.com/my-custom-protocol. This is a beta field that is guarded by the ServiceAppProtocol feature gate and enabled by default.
              */
             appProtocol?: pulumi.Input<string>;
             /**
@@ -9126,7 +9331,7 @@ export namespace core {
              */
             labelSelector?: pulumi.Input<inputs.meta.v1.LabelSelector>;
             /**
-             * MaxSkew describes the degree to which pods may be unevenly distributed. It's the maximum permitted difference between the number of matching pods in any two topology domains of a given topology type. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 1/1/0: | zone1 | zone2 | zone3 | |   P   |   P   |       | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 1/1/1; scheduling it onto zone1(zone2) would make the ActualSkew(2-0) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. It's a required field. Default value is 1 and 0 is not allowed.
+             * MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 1/1/0: | zone1 | zone2 | zone3 | |   P   |   P   |       | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 1/1/1; scheduling it onto zone1(zone2) would make the ActualSkew(2-0) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.
              */
             maxSkew: pulumi.Input<number>;
             /**
@@ -9134,7 +9339,10 @@ export namespace core {
              */
             topologyKey: pulumi.Input<string>;
             /**
-             * WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it - ScheduleAnyway tells the scheduler to still schedule it It's considered as "Unsatisfiable" if and only if placing incoming pod on any topology violates "MaxSkew". For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field.
+             * WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it. - ScheduleAnyway tells the scheduler to schedule the pod in any location,
+             *   but giving higher precedence to topologies that would help reduce the
+             *   skew.
+             * A constraint is considered "Unsatisfiable" for an incoming pod if and only if every possible node assigment for that pod would violate "MaxSkew" on some topology. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field.
              */
             whenUnsatisfiable: pulumi.Input<string>;
         }
@@ -9600,7 +9808,7 @@ export namespace events {
             /**
              * Information whether this series is ongoing or finished. Deprecated. Planned removal for 1.18
              */
-            state: pulumi.Input<string>;
+            state?: pulumi.Input<string>;
         }
     }
 
@@ -11111,7 +11319,7 @@ export namespace meta {
              */
             name?: pulumi.Input<string>;
             /**
-             * Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
+             * Namespace defines the space within which each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
              *
              * Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces
              */
@@ -11293,7 +11501,7 @@ export namespace networking {
         }
 
         /**
-         * NetworkPolicyPeer describes a peer to allow traffic from. Only certain combinations of fields are allowed
+         * NetworkPolicyPeer describes a peer to allow traffic to/from. Only certain combinations of fields are allowed
          */
         export interface NetworkPolicyPeer {
             /**
@@ -12225,7 +12433,7 @@ export namespace rbac {
         }
 
         /**
-         * ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.20.
+         * ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.22.
          */
         export interface ClusterRole {
             /**
@@ -12251,7 +12459,7 @@ export namespace rbac {
         }
 
         /**
-         * ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.20.
+         * ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.22.
          */
         export interface ClusterRoleBinding {
             /**
@@ -12303,7 +12511,7 @@ export namespace rbac {
         }
 
         /**
-         * Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.20.
+         * Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.22.
          */
         export interface Role {
             /**
@@ -12325,7 +12533,7 @@ export namespace rbac {
         }
 
         /**
-         * RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.20.
+         * RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.22.
          */
         export interface RoleBinding {
             /**
@@ -12403,7 +12611,7 @@ export namespace rbac {
         }
 
         /**
-         * ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.20.
+         * ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRole, and will no longer be served in v1.22.
          */
         export interface ClusterRole {
             /**
@@ -12429,7 +12637,7 @@ export namespace rbac {
         }
 
         /**
-         * ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.20.
+         * ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 ClusterRoleBinding, and will no longer be served in v1.22.
          */
         export interface ClusterRoleBinding {
             /**
@@ -12481,7 +12689,7 @@ export namespace rbac {
         }
 
         /**
-         * Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.20.
+         * Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 Role, and will no longer be served in v1.22.
          */
         export interface Role {
             /**
@@ -12503,7 +12711,7 @@ export namespace rbac {
         }
 
         /**
-         * RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.20.
+         * RoleBinding references a role, but does not contain it.  It can reference a Role in the same namespace or a ClusterRole in the global namespace. It adds who information via Subjects and namespace information by which namespace it exists in.  RoleBindings in a given namespace only have effect in that namespace. Deprecated in v1.17 in favor of rbac.authorization.k8s.io/v1 RoleBinding, and will no longer be served in v1.22.
          */
         export interface RoleBinding {
             /**

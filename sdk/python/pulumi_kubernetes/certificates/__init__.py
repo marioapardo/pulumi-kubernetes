@@ -6,6 +6,7 @@ import importlib
 
 # Make subpackages available:
 _submodules = [
+    'v1',
     'v1beta1',
 ]
 for pkg in _submodules:

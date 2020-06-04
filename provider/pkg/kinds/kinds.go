@@ -227,6 +227,7 @@ const (
 	BatchV1                   groupVersion = "batch/v1"
 	BatchV1B1                 groupVersion = "batch/v1beta1"
 	BatchV2A1                 groupVersion = "batch/v2alpha1"
+	CertificatesV1            groupVersion = "certificates.k8s.io/v1"
 	CertificatesV1B1          groupVersion = "certificates.k8s.io/v1beta1"
 	CoordinationV1            groupVersion = "coordination.k8s.io/v1"
 	CoordinationV1B1          groupVersion = "coordination.k8s.io/v1beta1"

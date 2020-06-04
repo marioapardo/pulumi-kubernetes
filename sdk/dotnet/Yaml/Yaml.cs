@@ -123,6 +123,8 @@ namespace Pulumi.Kubernetes.Yaml
                 type == typeof(Batch.V1Beta1.CronJobList) ? "batch/v1beta1/CronJobList" :
                 type == typeof(Batch.V2Alpha1.CronJob) ? "batch/v2alpha1/CronJob" :
                 type == typeof(Batch.V2Alpha1.CronJobList) ? "batch/v2alpha1/CronJobList" :
+                type == typeof(Certificates.V1.CertificateSigningRequest) ? "certificates.k8s.io/v1/CertificateSigningRequest" :
+                type == typeof(Certificates.V1.CertificateSigningRequestList) ? "certificates.k8s.io/v1/CertificateSigningRequestList" :
                 type == typeof(Certificates.V1Beta1.CertificateSigningRequest) ? "certificates.k8s.io/v1beta1/CertificateSigningRequest" :
                 type == typeof(Certificates.V1Beta1.CertificateSigningRequestList) ? "certificates.k8s.io/v1beta1/CertificateSigningRequestList" :
                 type == typeof(Coordination.V1.Lease) ? "coordination.k8s.io/v1/Lease" :
@@ -445,6 +447,7 @@ namespace Pulumi.Kubernetes.Yaml
                 || gvk == "batch/v1/JobList"
                 || gvk == "batch/v1beta1/CronJobList"
                 || gvk == "batch/v2alpha1/CronJobList"
+                || gvk == "certificates.k8s.io/v1/CertificateSigningRequestList"
                 || gvk == "certificates.k8s.io/v1beta1/CertificateSigningRequestList"
                 || gvk == "coordination.k8s.io/v1/LeaseList"
                 || gvk == "coordination.k8s.io/v1beta1/LeaseList"
@@ -766,6 +769,12 @@ namespace Pulumi.Kubernetes.Yaml
                         {
                             id.Apply(id => ($"batch/v2alpha1/CronJob::{id}",
                                 new Batch.V2Alpha1.CronJob(id, obj!, opts) as KubernetesResource))
+                        };
+                    case "certificates.k8s.io/v1/CertificateSigningRequest":
+                        return new[]
+                        {
+                            id.Apply(id => ($"certificates.k8s.io/v1/CertificateSigningRequest::{id}",
+                                new Certificates.V1.CertificateSigningRequest(id, obj!, opts) as KubernetesResource))
                         };
                     case "certificates.k8s.io/v1beta1/CertificateSigningRequest":
                         return new[]

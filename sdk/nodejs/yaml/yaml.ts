@@ -362,6 +362,10 @@ export abstract class CollectionComponentResource extends pulumi.ComponentResour
     public getResource(groupVersionKind: "batch/v2alpha1/CronJob", namespace: string, name: string): pulumi.Output<k8s.batch.v2alpha1.CronJob>;
     public getResource(groupVersionKind: "batch/v2alpha1/CronJobList", name: string): pulumi.Output<k8s.batch.v2alpha1.CronJobList>;
     public getResource(groupVersionKind: "batch/v2alpha1/CronJobList", namespace: string, name: string): pulumi.Output<k8s.batch.v2alpha1.CronJobList>;
+    public getResource(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", name: string): pulumi.Output<k8s.certificates.v1.CertificateSigningRequest>;
+    public getResource(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", namespace: string, name: string): pulumi.Output<k8s.certificates.v1.CertificateSigningRequest>;
+    public getResource(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", name: string): pulumi.Output<k8s.certificates.v1.CertificateSigningRequestList>;
+    public getResource(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", namespace: string, name: string): pulumi.Output<k8s.certificates.v1.CertificateSigningRequestList>;
     public getResource(groupVersionKind: "certificates.k8s.io/v1beta1/CertificateSigningRequest", name: string): pulumi.Output<k8s.certificates.v1beta1.CertificateSigningRequest>;
     public getResource(groupVersionKind: "certificates.k8s.io/v1beta1/CertificateSigningRequest", namespace: string, name: string): pulumi.Output<k8s.certificates.v1beta1.CertificateSigningRequest>;
     public getResource(groupVersionKind: "certificates.k8s.io/v1beta1/CertificateSigningRequestList", name: string): pulumi.Output<k8s.certificates.v1beta1.CertificateSigningRequestList>;
@@ -1224,6 +1228,24 @@ export abstract class CollectionComponentResource extends pulumi.ComponentResour
     public getResourceProperty(groupVersionKind: "batch/v2alpha1/CronJobList", namespace: string, name: string, property: "kind"): pulumi.Output<"CronJobList">;
     public getResourceProperty(groupVersionKind: "batch/v2alpha1/CronJobList", name: string, property: "metadata"): pulumi.Output<outputs.meta.v1.ListMeta>;
     public getResourceProperty(groupVersionKind: "batch/v2alpha1/CronJobList", namespace: string, name: string, property: "metadata"): pulumi.Output<outputs.meta.v1.ListMeta>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", name: string, property: "apiVersion"): pulumi.Output<"certificates.k8s.io/v1">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", namespace: string, name: string, property: "apiVersion"): pulumi.Output<"certificates.k8s.io/v1">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", name: string, property: "kind"): pulumi.Output<"CertificateSigningRequest">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", namespace: string, name: string, property: "kind"): pulumi.Output<"CertificateSigningRequest">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", name: string, property: "metadata"): pulumi.Output<outputs.meta.v1.ObjectMeta>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", namespace: string, name: string, property: "metadata"): pulumi.Output<outputs.meta.v1.ObjectMeta>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", name: string, property: "spec"): pulumi.Output<outputs.certificates.v1.CertificateSigningRequestSpec>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", namespace: string, name: string, property: "spec"): pulumi.Output<outputs.certificates.v1.CertificateSigningRequestSpec>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", name: string, property: "status"): pulumi.Output<outputs.certificates.v1.CertificateSigningRequestStatus>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequest", namespace: string, name: string, property: "status"): pulumi.Output<outputs.certificates.v1.CertificateSigningRequestStatus>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", name: string, property: "apiVersion"): pulumi.Output<"certificates.k8s.io/v1">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", namespace: string, name: string, property: "apiVersion"): pulumi.Output<"certificates.k8s.io/v1">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", name: string, property: "items"): pulumi.Output<outputs.certificates.v1.CertificateSigningRequest[]>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", namespace: string, name: string, property: "items"): pulumi.Output<outputs.certificates.v1.CertificateSigningRequest[]>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", name: string, property: "kind"): pulumi.Output<"CertificateSigningRequestList">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", namespace: string, name: string, property: "kind"): pulumi.Output<"CertificateSigningRequestList">;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", name: string, property: "metadata"): pulumi.Output<outputs.meta.v1.ListMeta>;
+    public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1/CertificateSigningRequestList", namespace: string, name: string, property: "metadata"): pulumi.Output<outputs.meta.v1.ListMeta>;
     public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1beta1/CertificateSigningRequest", name: string, property: "apiVersion"): pulumi.Output<"certificates.k8s.io/v1beta1">;
     public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1beta1/CertificateSigningRequest", namespace: string, name: string, property: "apiVersion"): pulumi.Output<"certificates.k8s.io/v1beta1">;
     public getResourceProperty(groupVersionKind: "certificates.k8s.io/v1beta1/CertificateSigningRequest", name: string, property: "kind"): pulumi.Output<"CertificateSigningRequest">;
@@ -2577,6 +2599,7 @@ export class ConfigFile extends CollectionComponentResource {
         || (gvk === "batch/v1/JobList")
         || (gvk === "batch/v1beta1/CronJobList")
         || (gvk === "batch/v2alpha1/CronJobList")
+        || (gvk === "certificates.k8s.io/v1/CertificateSigningRequestList")
         || (gvk === "certificates.k8s.io/v1beta1/CertificateSigningRequestList")
         || (gvk === "coordination.k8s.io/v1/LeaseList")
         || (gvk === "coordination.k8s.io/v1beta1/LeaseList")
@@ -2855,6 +2878,11 @@ export class ConfigFile extends CollectionComponentResource {
             return [id.apply(id => ({
                 name: `batch/v2alpha1/CronJob::${id}`,
                 resource: new k8s.batch.v2alpha1.CronJob(id, obj, opts),
+            }))];
+        case "certificates.k8s.io/v1/CertificateSigningRequest":
+            return [id.apply(id => ({
+                name: `certificates.k8s.io/v1/CertificateSigningRequest::${id}`,
+                resource: new k8s.certificates.v1.CertificateSigningRequest(id, obj, opts),
             }))];
         case "certificates.k8s.io/v1beta1/CertificateSigningRequest":
             return [id.apply(id => ({
